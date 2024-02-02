@@ -32,6 +32,7 @@ public class CircularQueue<Item> implements Iterable<Item> {
 			this.front = -1;
 		    this.rear = -1;
 		    this.items = (Item[]) new Object[capacity]; // Initialize the generic array
+		    this.currentSize = 0; // Initialize the size to 0
 		}catch(Exception e) {
 			System.out.println("Caught an Exception: " + e.getMessage());
 		}
@@ -113,7 +114,7 @@ public class CircularQueue<Item> implements Iterable<Item> {
 	   * @return size of queue
 	   */
 	  public int size() {
-		  return 0;
+		  return currentSize;
 		  //TODO initialize size() here
 	  }
 	  
@@ -130,7 +131,7 @@ public class CircularQueue<Item> implements Iterable<Item> {
 			    if (isEmpty()) {
 			      throw new NoSuchElementException("Queue is empty");
 			    } else {
-			    	//TODO Initialize peek() here
+			    	return items[front];
 			    }
 			  }catch(Exception e) {
 				  System.out.println("Caught an Exception: " + e.getMessage());
