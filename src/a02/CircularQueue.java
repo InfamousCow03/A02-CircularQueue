@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 
 public class CircularQueue<Item> implements Iterable<Item> {
 
-	int capacity, front, rear; // Size of Circular Queue
+	int capacity, front, rear, currentSize; // Size of Circular Queue
 	Item items[];
 	  
 	/**
@@ -23,19 +23,15 @@ public class CircularQueue<Item> implements Iterable<Item> {
 	 */
 	@SuppressWarnings("unchecked")
 	public CircularQueue(int capacity) {
-		super();
-		try {
-			if(capacity < 1) {
-				throw new IllegalArgumentException("Capacity can not be less than 1");
-			}
-			this.capacity = capacity;
-			this.front = -1;
-		    this.rear = -1;
-		    this.items = (Item[]) new Object[capacity]; // Initialize the generic array
-		    this.currentSize = 0; // Initialize the size to 0
-		}catch(Exception e) {
-			System.out.println("Caught an Exception: " + e.getMessage());
-		}
+	    super();
+	    if (capacity < 1) {
+	        throw new IllegalArgumentException("Capacity can not be less than 1");
+	    }
+	    this.capacity = capacity;
+	    this.front = -1;
+	    this.rear = -1;
+	    this.items = (Item[]) new Object[capacity];
+	    this.currentSize = 0;
 	}
 	
 
@@ -66,11 +62,12 @@ public class CircularQueue<Item> implements Iterable<Item> {
 	  void enqueue(Item item) {
 		  try {
 		      if (isFull()) {
-		          throw new UnsupportedOperationException("Queue is full");
+		          throw new IllegalArgumentException("Queue is full");
 		      } else {
 		          if (front == -1)
 		              front = 0;
 		          rear = (rear + 1) % capacity;
+		          currentSize++;
 		          items[rear] = item;
 		          System.out.println("Inserted " + item);
 		      }
@@ -96,6 +93,7 @@ public class CircularQueue<Item> implements Iterable<Item> {
 		      else {
 		        front = (front + 1) % capacity;
 		      }
+		      currentSize--;
 		      return (element);
 		    }
 		  }catch(Exception e) {
@@ -106,7 +104,6 @@ public class CircularQueue<Item> implements Iterable<Item> {
 	  
 	  
 	  /**
-	   * TODO
 	   * This method should return the number of elements currently stored in the queue. Note,
 	   * that this is different from the size of the array (capacity) of a queue. To avoid confusion,
 	   * refer to the fixed number of elements that can be stored in the queue as capacity.
@@ -115,14 +112,10 @@ public class CircularQueue<Item> implements Iterable<Item> {
 	   */
 	  public int size() {
 		  return currentSize;
-		  //TODO initialize size() here
 	  }
 	  
 	  
 	  /**
-	   * TODO
-	   * There was no description for this method in the assignment but based on the JUnit tests I think
-	   * its just supposed to return the first value of the queue without removing it hence the "peek"
 	   * 
 	   * @return first element in the queue without removing it
 	   */
@@ -186,41 +179,64 @@ public class CircularQueue<Item> implements Iterable<Item> {
 	  
 	  
 		/**
-		 * TODO create a more better test code
 		 * 
 		 * @param args
 		 */
-		public static void main(String[] args) {
-			CircularQueue<Integer> q = new CircularQueue<>(5);
+	  public static void main(String[] args) {
+	        CircularQueue<Integer> queue = new CircularQueue<>(5);
 
-		    // Fails because front = -1
-		    q.dequeue();
 
-		    q.enqueue(1);
-		    q.enqueue(2);
-		    q.enqueue(3);
-		    q.enqueue(4);
-		    q.enqueue(5);
+	        System.out.println("Is Queue Empty? " + queue.isEmpty());
 
-		    // Fails to enqueue because front == 0 && rear == SIZE - 1
-		    q.enqueue(6);
 
-		    System.out.println(q.toString());
+	        queue.enqueue(1);
+	        queue.enqueue(2);
+	        queue.enqueue(3);
 
-		    Integer elem = q.dequeue();
 
-		    if (elem != null) {
-		      System.out.println("Deleted Element is " + elem);
-		    }
-		    System.out.println(q.toString());
+	        System.out.println("Queue Size: " + queue.size());
 
-		    q.enqueue(7);
 
-		    System.out.println(q.toString());
+	        System.out.println("Peek: " + queue.peek());
 
-		    // Fails to enqueue because front == rear + 1
-		    q.enqueue(8);
-	
-		}
+
+	        System.out.println("Queue Contents: " + queue.toString());
+
+
+	        Integer dequeuedItem = queue.dequeue();
+	        if (dequeuedItem != null) {
+	            System.out.println("Dequeued Element: " + dequeuedItem);
+	        }
+
+
+	        System.out.println("Is Queue Full? " + queue.isFull());
+
+
+	        System.out.println("Queue Contents after Dequeue: " + queue.toString());
+
+
+	        queue.enqueue(4);
+
+
+	        System.out.println("Queue Contents after Enqueue: " + queue.toString());
+
+
+	        System.out.println("Is Queue Full? " + queue.isFull());
+
+
+	        try {
+	            queue.dequeue();
+	        } catch (NoSuchElementException e) {
+	            System.out.println("Exception caught: " + e.getMessage());
+	        }
+
+
+	        try {
+	            queue.enqueue(5);
+	            queue.enqueue(6);
+	        } catch (IllegalArgumentException e) {
+	            System.out.println("Exception caught: " + e.getMessage());
+	        }
+	    }
 
 }
